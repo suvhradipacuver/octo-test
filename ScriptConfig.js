@@ -1,1 +1,1 @@
-test
+const hello="hello-world"
