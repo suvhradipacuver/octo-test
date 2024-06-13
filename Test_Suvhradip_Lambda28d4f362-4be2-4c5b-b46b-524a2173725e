@@ -1,0 +1,24 @@
+import monacoThemes from "monaco-themes/themes/themelist";
+import Select from "react-select";
+
+const ThemeDropdown = ({ handleThemeChange, theme, mode }) => {
+  return (
+    <Select
+      placeholder={`Select Theme`}
+      options={Object.entries(monacoThemes).map(([themeId, themeName]) => ({
+        label: themeName,
+        value: themeId,
+        key: themeId,
+      }))}
+      value={theme}
+      onChange={(selectedTheme) => {
+        if (mode !== "view") {
+          handleThemeChange(selectedTheme);
+        }
+      }}
+      isDisabled={mode === "view"}
+    />
+  );
+};
+
+export default ThemeDropdown;
