@@ -1,0 +1,59 @@
+const onPush = async (code) => {
+  if (commit) {
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${dataForm.name}_${dataForm.lambdaId}`;
+    const updatedContent = btoa(unescape(encodeURIComponent(code)));
+    let body = {
+      message: commit,
+      content: updatedContent,
+    };
+
+    try {
+      // Get the current file content and its sha if it exists
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `token ${ACCESS_TOKEN}`,
+        },
+      });
+
+      if (response.ok) {
+        const fileData = await response.json();
+        body.sha = fileData.sha; // Add the sha to update the existing file
+      }
+
+      // Create or update the file
+      const updateResponse = await fetch(url, {
+        method: "PUT",
+        headers: {
+          Authorization: `token ${ACCESS_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!updateResponse.ok) {
+        throw new Error(`Error updating file: ${updateResponse.statusText}`);
+      }
+
+      const responseData = await updateResponse.json();
+
+      toast.success("Successfully code pushed to Github");
+
+      // Update commit list with the new commit information
+      setCommitList((prevCommitList) => [
+        {
+          sha: responseData.commit.sha,
+          message: responseData.commit.message,
+        },
+        ...prevCommitList,
+      ]);
+
+      // Clear the commit input field after push
+      setCommit("");
+    } catch (error) {
+      console.error("Error pushing code:", error);
+      toast.error("Unable to push data on Github");
+    }
+  } else {
+    toast.error("Commit message is required to push data on Github");
+  }
+};
