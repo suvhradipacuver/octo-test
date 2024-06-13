@@ -1,4 +1,4 @@
-const xyz = await fetch(blobUrl, {
+const test = await fetch(blobUrl, {
       headers: {
         Authorization: `token ${ACCESS_TOKEN}`,
       },
