@@ -1,0 +1,7 @@
+<ButtonComponent
+              icon={<IoGitBranch className="mr-1" size={18} />}
+              classes={"bg-JungleGreen text-white"}
+              onClick={showModal}
+            >
+              Save & Push
+</ButtonComponent>
