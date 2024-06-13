@@ -10,7 +10,11 @@ const ThemeDropdown = ({ handleThemeChange, theme, mode }) => {
         value: themeId,
         key: themeId,
       }))}
-      value={theme}
+      onChange={(selectedTheme) => {
+        if (mode !== "view") {
+          handleThemeChange(selectedTheme);
+        }
+      }}
       isDisabled={mode === "view"}
     />
   );
