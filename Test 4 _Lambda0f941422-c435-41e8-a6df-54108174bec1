@@ -1,4 +1,4 @@
-var data = JSON.parse(input.modifiedPayload);
+var xyz = JSON.parse(input.modifiedPayload);
 
 // Check if eventType is "shipment_created" and source is "flipkart"
 if (data.eventType === "shipment_created" && data.source === "flipkart") {
