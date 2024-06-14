@@ -1,10 +1,18 @@
-var XYZ = JSON.parse(input.setModifiedPayload);
-if (data.eventType === "shipments" && data.source === "flipkart") {
+var data = JSON.parse(input.modifiedPayload);
+
+// Check if eventType is "shipment_created" and source is "flipkart"
+if (data.eventType === "shipment_created" && data.source === "flipkart") {
     // Check if dispatchLocation is provided and not empty
      if (!data.attributes.dispatchLocation) {
         throw new Error('Invalid data: dispatchLocation is missing or empty');
     }
+    
     // Change eventType to "lamdaDefinition"
     data.eventType = "lamdaDefinition.";
 }
+
 response.setModifiedPayload(JSON.stringify(data));
+
+// {
+//     "modifiedPayload": "{\"id\":\"cus_MYER1008029021\",\"orderId\":null,\"returnReferenceId\":\"4420028006\",\"type\":\"CUSTOMER_RETURN\",\"status\":\"CONFIRMED\",\"createdOn\":\"2024-04-0309:52:36\",\"sellerOrderId\":\"b8fc939b-c7a2-41b4-8fe5-4c4e3572225d\",\"trackingNumber\":null,\"items\":null,\"reason\":\"Itdidnotlookgoodonme\",\"orderLineId\":\"9848075361\",\"returnWarehouseCode\":\"NDLH_CFA\"}"
+// }
