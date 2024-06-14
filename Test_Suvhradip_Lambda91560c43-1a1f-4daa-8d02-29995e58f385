@@ -1,2 +1,10 @@
-   var data = JSON.parse(input.modifiedPayload);
-   response.setModifiedPayload(JSON.stringify(data));
+var data = JSON.parse(input.setModifiedPayload);
+if (data.eventType === "shipments" && data.source === "flipkart") {
+    // Check if dispatchLocation is provided and not empty
+     if (!data.attributes.dispatchLocation) {
+        throw new Error('Invalid data: dispatchLocation is missing or empty');
+    }
+    // Change eventType to "lamdaDefinition"
+    data.eventType = "lamdaDefinition.";
+}
+response.setModifiedPayload(JSON.stringify(data));
