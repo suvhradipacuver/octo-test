@@ -1,0 +1,14 @@
+var data = JSON.parse(input.modifiedPayload);
+
+// Check if eventType is "shipment_created" and source is "flipkart"
+if (data.eventType === "shipment_created" && data.source === "flipkart") {
+    // Check if dispatchLocation is provided and not empty
+     if (!data.attributes.dispatchLocation) {
+        throw new Error('Invalid data: dispatchLocation is missing or empty');
+    }
+    
+    // Change eventType to "lamdaDefinition"
+    data.eventType = "lamdaDefinition.";
+}
+
+response.setModifiedPayload(JSON.stringify(data));
