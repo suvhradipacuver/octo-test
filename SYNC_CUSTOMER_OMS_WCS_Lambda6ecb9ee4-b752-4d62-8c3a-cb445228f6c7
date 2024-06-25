@@ -22,17 +22,19 @@ let coOrganizationIdentifier = meOrganization.getElementsByTagName('Co:Organizat
 let coDistinguishedName = coOrganizationIdentifier.getElementsByTagName('Co:DistinguishedName')[0];
 let coParentIdentifier = meOrganization.getElementsByTagName('Co:ParentIdentifier')[0];
 let coDistinguishedNameParent= coParentIdentifier.getElementsByTagName('Co:DistinguishedName')[0];
-let coContactInfo = modifiedObject.getElementsByTagName('Co:ContactInfo')[0];
-let coAddress = coContactInfo.getElementsByTagName('Co:Address')[0];
+// let coContactInfo = modifiedObject.getElementsByTagName('Co:ContactInfo')[0];
+// let coAddress = coContactInfo.getElementsByTagName('Co:Address')[0];
 
 let customer = originalObject.getElementsByTagName('Customer')[0];
 let organizationCode = customer.getAttribute('OrganizationCode');
 let operation = customer.getAttribute('Operation');
 let customerID = customer.getAttribute('CustomerID');
-let customerAdditionalAddressList = customer.getElementsByTagName('CustomerAdditionalAddressList')[0];
-let customerAdditionalAddress = customerAdditionalAddressList.getElementsByTagName('CustomerAdditionalAddress')[0];
-let isDefaultBillTo = customerAdditionalAddress.getAttribute('IsDefaultBillTo');
-let personInfo = customerAdditionalAddress.getElementsByTagName('PersonInfo')[0];
+// let customerAdditionalAddressList = customer.getElementsByTagName('CustomerAdditionalAddressList')[0];
+// let customerAdditionalAddress = customerAdditionalAddressList.getElementsByTagName('CustomerAdditionalAddress')[0];
+// let isDefaultBillTo = customerAdditionalAddress.getAttribute('IsDefaultBillTo');
+// let personInfo = customerAdditionalAddress.getElementsByTagName('PersonInfo')[0];
+// let addressLine1 = personInfo.getAttribute('AddressLine1');
+
 
 let contextDataMap = new Map();
 for (let i = 0; i < contextData.length; i++) {
@@ -75,10 +77,26 @@ coDistinguishedNameParent.textContent =wCParentDNTree;
 
 oaActionExpression.setAttribute("actionCode", actionCode);
 
-if(isDefaultBillTo === 'Y'){
+// if(isDefaultBillTo === 'Y'){
+//  const addressLines = address.getElementsByTagName('_wcf:AddressLine');
+//                for (let i = 0; i < Math.min(addressLines.length, 4); i++) {
+//                   switch (i) {
+//                      case 0:
+//                         AddressLine1 = addressLines[i].textContent;
+//                         break;
+//                      case 1:
+//                         AddressLine2 = addressLines[i].textContent;
+//                         break;
+//                      case 2:
+//                         AddressLine3 = addressLines[i].textContent;
+//                         break;
+//                      case 3:
+//                         AddressLine4 = addressLines[i].textContent;
+//                         break;
+//                   }
+//                }
 
-
-}
+// }
 
 output = serializer.serializeToString(modifiedObject);
 response.setModifiedPayload(output);
