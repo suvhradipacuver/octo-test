@@ -21,19 +21,14 @@ let meOrganization = modifiedObject.getElementsByTagName('Me:Organization')[0];
 let coOrganizationIdentifier = meOrganization.getElementsByTagName('Co:OrganizationIdentifier')[0];
 let coDistinguishedName = coOrganizationIdentifier.getElementsByTagName('Co:DistinguishedName')[0];
 let coParentIdentifier = meOrganization.getElementsByTagName('Co:ParentIdentifier')[0];
-let coDistinguishedNameParent= coParentIdentifier.getElementsByTagName('Co:DistinguishedName')[0];
-// let coContactInfo = modifiedObject.getElementsByTagName('Co:ContactInfo')[0];
-// let coAddress = coContactInfo.getElementsByTagName('Co:Address')[0];
+let coDistinguishedNameParent = coParentIdentifier.getElementsByTagName('Co:DistinguishedName')[0];
+let coContextAttribute = modifiedObject.getElementsByTagName('coContextAttribute');
 
 let customer = originalObject.getElementsByTagName('Customer')[0];
 let organizationCode = customer.getAttribute('OrganizationCode');
 let operation = customer.getAttribute('Operation');
 let customerID = customer.getAttribute('CustomerID');
-// let customerAdditionalAddressList = customer.getElementsByTagName('CustomerAdditionalAddressList')[0];
-// let customerAdditionalAddress = customerAdditionalAddressList.getElementsByTagName('CustomerAdditionalAddress')[0];
-// let isDefaultBillTo = customerAdditionalAddress.getAttribute('IsDefaultBillTo');
-// let personInfo = customerAdditionalAddress.getElementsByTagName('PersonInfo')[0];
-// let addressLine1 = personInfo.getAttribute('AddressLine1');
+let customerLevel = customer.getAttribute('CustomerLevel');
 
 
 let contextDataMap = new Map();
@@ -72,7 +67,7 @@ if (wCBuyerOrgGroup.hasOwnProperty(organizationCode)) {
 
 
 coDistinguishedName.textContent = `o=${customerID},${wCParentDNTree}`;
-coDistinguishedNameParent.textContent =wCParentDNTree;
+coDistinguishedNameParent.textContent = wCParentDNTree;
 
 
 oaActionExpression.setAttribute("actionCode", actionCode);
@@ -97,6 +92,35 @@ oaActionExpression.setAttribute("actionCode", actionCode);
 //                }
 
 // }
+
+
+for (let i = 0; i < coContextAttribute.length; i++) {
+    let coContextAttributeElement = coContextAttribute[i];
+
+    let coNameElements = coContextAttributeElement.getElementsByTagName('Co:Name');
+    let coAttributeValueElements = coContextAttributeElement.getElementsByTagName('Co:AttributeValue');
+    
+    if (coNameElements.length > 0 && coAttributeValueElements.length > 0) {
+        let coName = coNameElements[0];
+        let coAttributeValue = coAttributeValueElements[0];
+        let coValueElements = coAttributeValue.getElementsByTagName('Co:Value');
+        
+        if (coValueElements.length > 0) {
+            let coValue = coValueElements[0];
+
+            coName.textContent = "CUSTOMERACCOUNTNO11";
+            coValue.textContent = customerID;
+
+            if (customerLevel) {
+                coName.textContent = "PRICEGROUP";
+                coValue.textContent = customerLevel;
+
+            }
+        }
+    } 
+}
+
+
 
 output = serializer.serializeToString(modifiedObject);
 response.setModifiedPayload(output);
