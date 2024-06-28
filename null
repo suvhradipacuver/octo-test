@@ -1,15 +1,28 @@
-export const test = async (filename, commitId) => {
-  const url =
-    process.env.REACT_APP_API_URL +
-    `/aekyam/platform-lambda/lambda/fetch-commit-content/${filename}?commitId=${commitId}`;
-  try {
-    const response = await axiosInstance.get(url);
-    if (response.status === 200) {
-      return response.data;
+  const onPush = async (code) => {
+    if (commit) {
+      try {
+        // Get the current file content and its sha if it exists
+        const payload = {
+          sourceCode: code,
+          commitMessage: commit,
+          filename: `${dataForm?.name}_${dataForm?.lambdaId}`,
+          lambda: dataForm,
+        };
+        const responseData = await publishToGithub(payload);
+        setCommitList((prevCommitList) => [
+          {
+            sha: responseData?.sha,
+            message: responseData?.message,
+          },
+          ...prevCommitList,
+        ]);
+        setCommit("");
+        toast.success("Successfully code pushed to Github");
+      } catch (error) {
+        console.error("Error pushing code:", error);
+        toast.error("Unable to push data on Github");
+      }
     } else {
-      throw new Error();
+      toast.error("Commit message is required to push data on Github");
     }
-  } catch (error) {
-    toast.error("Unable to fetch commits");
-  }
-};
+  };
