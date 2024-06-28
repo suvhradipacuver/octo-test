@@ -1,28 +1,3 @@
-  const onPush = async (code) => {
-    if (commit) {
-      try {
-        // Get the current file content and its sha if it exists
-        const payload = {
-          sourceCode: code,
-          commitMessage: commit,
-          filename: `${dataForm?.name}_${dataForm?.lambdaId}`,
-          lambda: dataForm,
-        };
-        const responseData = await publishToGithub(payload);
-        setCommitList((prevCommitList) => [
-          {
-            sha: responseData?.sha,
-            message: responseData?.message,
-          },
-          ...prevCommitList,
-        ]);
-        setCommit("");
-        toast.success("Successfully code pushed to Github");
-      } catch (error) {
-        console.error("Error pushing code:", error);
-        toast.error("Unable to push data on Github");
-      }
-    } else {
-      toast.error("Commit message is required to push data on Github");
-    }
-  };
+/** Write your code here
+   Read the Payload from field input
+   Write the Payload to field output */
