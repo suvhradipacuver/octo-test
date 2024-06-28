@@ -7,29 +7,25 @@ const serializer = new XMLSerializer();
 const modifiedObject = parser.parseFromString(input.modifiedPayload, 'text/xml');
 const originalObject = parser.parseFromString(input.originalPayload, 'text/xml');
 
-let meSyncOrganization = modifiedObject.getElementsByTagName('getElementsByTagName')[0];
 let applicationArea = modifiedObject.getElementsByTagName('Oa:ApplicationArea')[0];
 let creationDateTime = applicationArea.getElementsByTagName('Oa:CreationDateTime')[0];
 let businessContext = applicationArea.getElementsByTagName('Co:BusinessContext')[0];
 let contextData = businessContext.getElementsByTagName('Co:ContextData');
-let meDataArea = modifiedObject.getElementsByTagName('Me:DataArea')[0];
 let oaSync = modifiedObject.getElementsByTagName('Oa:Sync')[0];
 let oaActionCriteria = oaSync.getElementsByTagName('Oa:ActionCriteria')[0];
 let oaActionExpression = oaActionCriteria.getElementsByTagName('Oa:ActionExpression')[0];
 let actionCode = oaActionExpression.getAttribute('actionCode');
-let meOrganization = modifiedObject.getElementsByTagName('Me:Organization')[0];
-let coOrganizationIdentifier = meOrganization.getElementsByTagName('Co:OrganizationIdentifier')[0];
+let coContextAttribute = modifiedObject.getElementsByTagName('Co:ContextAttribute');
+let coOrganizationIdentifier = modifiedObject.getElementsByTagName('Co:OrganizationIdentifier')[0];
 let coDistinguishedName = coOrganizationIdentifier.getElementsByTagName('Co:DistinguishedName')[0];
-let coParentIdentifier = meOrganization.getElementsByTagName('Co:ParentIdentifier')[0];
+let coParentIdentifier = modifiedObject.getElementsByTagName('Co:ParentIdentifier')[0];
 let coDistinguishedNameParent = coParentIdentifier.getElementsByTagName('Co:DistinguishedName')[0];
-let coContextAttribute = modifiedObject.getElementsByTagName('coContextAttribute');
 
 let customer = originalObject.getElementsByTagName('Customer')[0];
 let organizationCode = customer.getAttribute('OrganizationCode');
 let operation = customer.getAttribute('Operation');
 let customerID = customer.getAttribute('CustomerID');
 let customerLevel = customer.getAttribute('CustomerLevel');
-
 
 let contextDataMap = new Map();
 for (let i = 0; i < contextData.length; i++) {
@@ -44,11 +40,9 @@ if (applicationArea) {
    creationDateTime.textContent = currentdate.toISOString();
 
    if (contextDataMap.has("storeId") && contextDataMap.get('storeId')) {
-
       if (organizationCode === "TV") {
-         businessContext.textContent = contextDataMap.get('storeId')
+         businessContext.textContent = contextDataMap.get('storeId');
       }
-
    }
 }
 
@@ -57,7 +51,6 @@ const wCBuyerOrgGroup = {
    "TV": "o=us bo,o=buyer organizations,o=root organization",
    "tv": "o=us bo,o=buyer organizations,o=root organization",
 };
-
 
 let wCParentDNTree = '';
 
@@ -69,58 +62,25 @@ if (wCBuyerOrgGroup.hasOwnProperty(organizationCode)) {
 coDistinguishedName.textContent = `o=${customerID},${wCParentDNTree}`;
 coDistinguishedNameParent.textContent = wCParentDNTree;
 
-
 oaActionExpression.setAttribute("actionCode", actionCode);
 
-// if(isDefaultBillTo === 'Y'){
-//  const addressLines = address.getElementsByTagName('_wcf:AddressLine');
-//                for (let i = 0; i < Math.min(addressLines.length, 4); i++) {
-//                   switch (i) {
-//                      case 0:
-//                         AddressLine1 = addressLines[i].textContent;
-//                         break;
-//                      case 1:
-//                         AddressLine2 = addressLines[i].textContent;
-//                         break;
-//                      case 2:
-//                         AddressLine3 = addressLines[i].textContent;
-//                         break;
-//                      case 3:
-//                         AddressLine4 = addressLines[i].textContent;
-//                         break;
-//                   }
-//                }
-
-// }
-
-
 for (let i = 0; i < coContextAttribute.length; i++) {
-    let coContextAttributeElement = coContextAttribute[i];
+   let coContextAttributeElement = coContextAttribute[i];
 
-    let coNameElements = coContextAttributeElement.getElementsByTagName('Co:Name');
-    let coAttributeValueElements = coContextAttributeElement.getElementsByTagName('Co:AttributeValue');
-    
-    if (coNameElements.length > 0 && coAttributeValueElements.length > 0) {
-        let coName = coNameElements[0];
-        let coAttributeValue = coAttributeValueElements[0];
-        let coValueElements = coAttributeValue.getElementsByTagName('Co:Value');
-        
-        if (coValueElements.length > 0) {
-            let coValue = coValueElements[0];
+   let coNameElements = coContextAttributeElement.getElementsByTagName('Co:Name');
+   let coAttributeValueElements = coContextAttributeElement.getElementsByTagName('Co:AttributeValue');
 
-            coName.textContent = "CUSTOMERACCOUNTNO11";
-            coValue.textContent = customerID;
+   if (coNameElements.length > 0) {
+      coNameElements[0].textContent = "CUSTOMERACCOUNTNO";
+   }
 
-            if (customerLevel) {
-                coName.textContent = "PRICEGROUP";
-                coValue.textContent = customerLevel;
-
-            }
-        }
-    } 
+   if (coAttributeValueElements.length > 0) {
+      let coValueElements = coAttributeValueElements[0].getElementsByTagName('Co:Value');
+      if (coValueElements.length > 0) {
+         coValueElements[0].textContent = customerID;
+      }
+   }
 }
-
-
 
 output = serializer.serializeToString(modifiedObject);
 response.setModifiedPayload(output);
