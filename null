@@ -1,4 +1,4 @@
-export const fetchCodeByCommitID = async (filename, commitId) => {
+export const test = async (filename, commitId) => {
   const url =
     process.env.REACT_APP_API_URL +
     `/aekyam/platform-lambda/lambda/fetch-commit-content/${filename}?commitId=${commitId}`;
