@@ -1,1 +1,15 @@
-System.err.println(testinggg the code and getting content)
+export const fetchCode_CommitID = async (filename, commitId) => {
+  const url =
+    process.env.REACT_APP_API_URL +
+    `/aekyam/platform-lambda/lambda/fetch-commit-content/${filename}?commitId=${commitId}`;
+  try {
+    const response = await axiosInstance.get(url);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error();
+    }
+  } catch (error) {
+    toast.error("Unable to fetch commits");
+  }
+};
